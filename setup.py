@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='antigate',
-    version="1.0",
+    version="1.1",
     description='Easy wrapper for antigate.com',
     keywords="antigate captcha",
     long_description=open('README.rst').read(),
@@ -12,7 +12,7 @@ setup(
     url='http://github.com/gotlium/antigate',
     packages=['antigate'],
     include_package_data=True,
-    install_requires=['setuptools', 'grab'],
+    install_requires=['setuptools', 'grab', 'xmltodict'],
     zip_safe=False,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
