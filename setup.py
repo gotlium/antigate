@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='antigate',
-    version="1.1",
+    version="1.2",
     description='Easy wrapper for antigate.com',
     keywords="antigate captcha",
     long_description=open('README.rst').read(),
