@@ -30,8 +30,8 @@ if you want send abuse to do not matching result, use ``abuse`` method.
 
     >>> from antigate import AntiGate
     >>> gate = AntiGate('API-KEY', 'captcha.jpg')
-    >>> print code
-    >>> if str(code) != 'qwerty':
+    >>> print gate
+    >>> if str(gate) != 'qwerty':
     >>>     gate.abuse()
 
 After all manipulations, you can get your balance:
@@ -51,12 +51,14 @@ Customize grab preferences:
     >>> from antigate import AntiGate
     >>> config = {'connect_timeout': 5, 'timeout': 60}
     >>> gate = AntiGate('API-KEY', 'captcha.jpg', grab_config=config)
+    >>> print gate
 
 Additional options for sending Captcha:
 
     >>> from antigate import AntiGate
     >>> config = {'min_len': '3', 'max_len': '5', 'phrase': '2'}
     >>> gate = AntiGate('API-KEY', 'captcha.jpg', send_config=config)
+    >>> print gate
 
 Disable auto run and use methods manually:
     >>> from antigate import AntiGate
