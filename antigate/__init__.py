@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from urllib import urlencode
-from time import sleep
+from logging import getLogger
 from datetime import datetime
 from xmltodict import parse
+from time import sleep
 
 from grab import Grab, UploadFile
 
@@ -20,7 +21,8 @@ class AntiGateError(Exception):
 class AntiGate(object):
 
     def __init__(self, key, filename='', auto_run=True,
-                 grab_config=None, send_config=None):
+                 grab_config=None, send_config=None,
+                 domain='antigate.com'):
         self.g = Grab()
         if grab_config:
             self.g.setup(**grab_config)
@@ -28,14 +30,19 @@ class AntiGate(object):
         self.captcha_id = None
         self.captcha_key = None
         self.send_config = send_config
+        self.domain = domain
+        self.logger = getLogger(__name__)
 
         if auto_run and filename:
             self.run(filename)
 
-    def _get_input_url(self):
+    def _get_domain(self, path):
         if DEBUG:
-            return 'http://127.0.0.1:8000/in.php'
-        return 'http://antigate.com/in.php'
+            return 'http://127.0.0.1:8000/%s' % path
+        return 'http://%s/%s' % (self.domain, path)
+
+    def _get_input_url(self):
+        return self._get_domain('in.php')
 
     def _update_params(self, defaults, additional):
         if additional is not None and additional:
@@ -46,9 +53,7 @@ class AntiGate(object):
         params = urlencode(self._update_params(
             {'key': self.key, 'action': action}, data
         ))
-        if DEBUG:
-            return 'http://127.0.0.1:8000/res.php?%s' % params
-        return 'http://antigate.com/res.php?%s' % params
+        return self._get_domain('res.php?%s' % params)
 
     def _get_result_url(self, action='get', captcha_id=None):
         return self._get_build_url(action, {
@@ -85,10 +90,12 @@ class AntiGate(object):
         return self._body('captcha_id')
 
     def send(self, filename):
+        self.logger.debug('Sending captcha')
         while True:
             try:
                 return self._send(filename)
             except AntiGateError, msg:
+                self.logger.debug(msg)
                 if str(msg) != 'ERROR_NO_SLOT_AVAILABLE':
                     raise AntiGateError(msg)
 
@@ -99,12 +106,15 @@ class AntiGate(object):
         return self._body('captcha_key')
 
     def get(self, captcha_id=None):
+        self.logger.debug('Fetching result')
+        sleep(10)
         while True:
             try:
                 return self._get(captcha_id)
             except AntiGateError, msg:
+                self.logger.debug(msg)
                 if str(msg) == 'CAPCHA_NOT_READY':
-                    sleep(10)
+                    sleep(5)
                 else:
                     raise AntiGateError(msg)
 
@@ -133,7 +143,7 @@ class AntiGate(object):
         return [s for s in self._response_to_dict()['stats']]
 
     def load(self):
-        self._go('http://antigate.com/load.php', 'Can not get loads')
+        self._go(self._get_domain('load.php'), 'Can not get loads')
         return self._response_to_dict()
 
     def run(self, filename):
