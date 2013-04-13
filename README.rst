@@ -4,7 +4,7 @@ Real-time captcha-to-text decodings
 
 Installation:
 -------------
-1. Package:
+1. From source:
 
 .. code-block:: bash
 
@@ -24,7 +24,7 @@ Usage:
     >>> from antigate import AntiGate
     >>> print AntiGate('API-KEY', 'captcha.jpg')
 
-if you want send abuse to do not matching result, use ``abuse`` method.
+If you wish to complain about a mismatch results, use ``abuse`` method.
 
 **Example:**
 
@@ -38,15 +38,19 @@ After all manipulations, you can get your balance:
 
     >>> print gate.balance()
 
-Or full statistic:
+Or get your statistics data:
 
     >>> print gate.stats()
 
-System load:
+Real time system load info:
 
     >>> print gate.load()
 
-Customize grab preferences:
+
+Customizing requests to API
+---------------------------
+
+Customize grab-lib preferences:
 
     >>> from antigate import AntiGate
     >>> config = {'connect_timeout': 5, 'timeout': 60}
@@ -68,7 +72,7 @@ Disable auto run and use methods manually:
     >>> print gate.get(captcha_id1)
     >>> print gate.get(captcha_id2)
 
-Multi ids:
+Get results for multiple ids:
     >>> gate = AntiGate('API-KEY', auto_run=False)
     >>> captcha_id1 = gate.send('captcha1.jpg')
     >>> captcha_id2 = gate.send('captcha2.jpg')
