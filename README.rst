@@ -77,3 +77,9 @@ Get results for multiple ids:
     >>> captcha_id1 = gate.send('captcha1.jpg')
     >>> captcha_id2 = gate.send('captcha2.jpg')
     >>> print gate.get_multi([captcha_id1, captcha_id2])
+
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/gotlium/antigate/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+
