@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from urllib import urlencode
 from logging import getLogger
 from datetime import datetime
+
+try:
+    from urllib import urlencode
+except ImportError:
+    from urllib.parse import urlencode
 from xmltodict import parse
+from sys import exc_info
 from time import sleep
 
 from grab import Grab, UploadFile
@@ -19,7 +24,6 @@ class AntiGateError(Exception):
 
 
 class AntiGate(object):
-
     def __init__(self, key, filename='', auto_run=True,
                  grab_config=None, send_config=None,
                  domain='antigate.com'):
@@ -94,7 +98,8 @@ class AntiGate(object):
         while True:
             try:
                 return self._send(filename)
-            except AntiGateError, msg:
+            except AntiGateError:
+                msg = exc_info()[1]
                 self.logger.debug(msg)
                 if str(msg) != 'ERROR_NO_SLOT_AVAILABLE':
                     raise AntiGateError(msg)
@@ -111,7 +116,8 @@ class AntiGate(object):
         while True:
             try:
                 return self._get(captcha_id)
-            except AntiGateError, msg:
+            except AntiGateError:
+                msg = exc_info()[1]
                 self.logger.debug(msg)
                 if str(msg) == 'CAPCHA_NOT_READY':
                     sleep(5)

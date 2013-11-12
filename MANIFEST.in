@@ -1,0 +1,4 @@
+include tox.ini
+include requirements/*
+recursive-exclude * .DS_Store
+recursive-include antigate *.py

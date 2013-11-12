@@ -1,0 +1,4 @@
+grab==0.4.13
+lxml==3.2.4
+pycurl==7.19.0.2
+xmltodict==0.8.3
