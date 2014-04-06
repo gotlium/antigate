@@ -10,6 +10,7 @@ except ImportError:
 from xmltodict import parse
 from sys import exc_info
 from time import sleep
+import base64
 
 from grab import Grab, UploadFile
 
@@ -24,9 +25,9 @@ class AntiGateError(Exception):
 
 
 class AntiGate(object):
-    def __init__(self, key, filename='', auto_run=True,
+    def __init__(self, key, captcha_file='', auto_run=True,
                  grab_config=None, send_config=None,
-                 domain='antigate.com'):
+                 domain='antigate.com', binary=False):
         self.g = Grab()
         if grab_config:
             self.g.setup(**grab_config)
@@ -37,8 +38,8 @@ class AntiGate(object):
         self.domain = domain
         self.logger = getLogger(__name__)
 
-        if auto_run and filename:
-            self.run(filename)
+        if auto_run and captcha_file:
+            self.run(captcha_file, binary)
 
     def _get_domain(self, path):
         if DEBUG:
@@ -87,17 +88,26 @@ class AntiGate(object):
                 self.g.response.code, err, self.g.response.body
             ))
 
-    def _send(self, filename):
-        self.g.setup(multipart_post=self._update_params(
-            {'key': self.key, 'file': UploadFile(filename)}, self.send_config))
+    def _send(self, captcha_file, binary=False):
+        if binary:
+            body = base64.b64encode(captcha_file)
+            self.g.setup(post=self._update_params(
+                {'method': 'base64', 'key': self.key, 'body': body},
+                self.send_config
+            ))
+        else:
+            self.g.setup(multipart_post=self._update_params(
+                {'key': self.key, 'file': UploadFile(captcha_file)},
+                self.send_config
+            ))
         self._go(self._get_input_url(), 'Can not send captcha')
         return self._body('captcha_id')
 
-    def send(self, filename):
+    def send(self, captcha_file, binary=False):
         self.logger.debug('Sending captcha')
         while True:
             try:
-                return self._send(filename)
+                return self._send(captcha_file, binary)
             except AntiGateError:
                 msg = exc_info()[1]
                 self.logger.debug(msg)
@@ -152,8 +162,8 @@ class AntiGate(object):
         self._go(self._get_domain('load.php'), 'Can not get loads')
         return self._response_to_dict()
 
-    def run(self, filename):
-        self.send(filename)
+    def run(self, captcha_file, binary=False):
+        self.send(captcha_file, binary)
         self.get()
 
     def __str__(self):
