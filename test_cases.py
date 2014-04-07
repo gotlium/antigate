@@ -3,7 +3,7 @@ import os
 
 from antigate import AntiGate
 
-API_KEY = "2609aa867da257483fc81ce6024ebb46"
+API_KEY = "e40fba1aabd4acf4266183acd661d8c1"
 IMAGE1 = "captcha/123.jpg"
 IMAGE2 = "captcha/456.jpg"
 
