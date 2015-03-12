@@ -31,7 +31,7 @@ Installation:
 
 .. code-block:: bash
 
-    $  sudo pip install antigate
+    $  pip install antigate
 
 Usage:
 ------

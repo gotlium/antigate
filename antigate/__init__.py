@@ -29,6 +29,7 @@ class AntiGate(object):
                  grab_config=None, send_config=None,
                  domain='antigate.com', binary=False):
         self.g = Grab()
+        self.g.setup(timeout=30)
         if grab_config:
             self.g.setup(**grab_config)
         self.key = key
@@ -97,7 +98,8 @@ class AntiGate(object):
             ))
         else:
             self.g.setup(multipart_post=self._update_params(
-                {'key': self.key, 'file': UploadFile(captcha_file)},
+                {'method': 'post', 'key': self.key,
+                 'file': UploadFile(captcha_file)},
                 self.send_config
             ))
         self._go(self._get_input_url(), 'Can not send captcha')

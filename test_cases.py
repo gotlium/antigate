@@ -3,7 +3,7 @@ import os
 
 from antigate import AntiGate
 
-API_KEY = "e40fba1aabd4acf4266183acd661d8c1"
+API_KEY = "21fbd2f052b446aaf3b243df10120f20"
 IMAGE1 = "captcha/123.jpg"
 IMAGE2 = "captcha/456.jpg"
 
@@ -16,7 +16,7 @@ class TestAnigateCase(unittest.TestCase):
         self.assertTrue(len(AntiGate(API_KEY).stats()) > 0)
 
     def test_load(self):
-        self.assertEqual(len(AntiGate(API_KEY).load()), 4)
+        self.assertTrue(len(AntiGate(API_KEY).load()) > 0)
 
     def test_base(self):
         self.assertEqual(str(AntiGate(API_KEY, IMAGE1)), '123')
