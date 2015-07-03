@@ -29,10 +29,7 @@ class AntiGate(object):
     def __init__(self, key, captcha_file='', auto_run=True,
                  grab_config=None, send_config=None,
                  domain='antigate.com', binary=False):
-        self.g = Grab()
-        self.g.setup(timeout=30)
-        if grab_config:
-            self.g.setup(**grab_config)
+        self.g = Grab(**(grab_config or {}))
         self.key = key
         self.captcha_id = None
         self.captcha_key = None
@@ -97,6 +94,8 @@ class AntiGate(object):
     def _send(self, captcha_file, binary=False):
         if binary:
             body = base64.b64encode(captcha_file)
+            if six.PY3:
+                body = body.decode('utf-8')
             self.g.setup(post=self._update_params(
                 {'method': 'base64', 'key': self.key, 'body': body},
                 self.send_config
@@ -144,6 +143,8 @@ class AntiGate(object):
     def _get_multi(self, ids):
         self._go(self._get_build_url(data={
             'ids': ','.join(map(str, ids))}), 'Can not get result')
+        if six.PY3:
+            return self.g.response.body.decode('utf-8').split('|')
         return self.g.response.body.split('|')
 
     def get_multi(self, ids):

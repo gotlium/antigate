@@ -1,5 +1,4 @@
 import unittest
-import os
 
 from antigate import AntiGate
 
@@ -22,8 +21,10 @@ class TestAnigateCase(unittest.TestCase):
         self.assertEqual(str(AntiGate(API_KEY, IMAGE1)), '123')
 
     def test_base_binary(self):
+        fp = open(IMAGE1, 'rb')
         self.assertEqual(str(AntiGate(
-            API_KEY, open(IMAGE1, 'rb').read(), binary=True)), '123')
+            API_KEY, fp.read(), binary=True)), '123')
+        fp.close()
 
     def test_abuse(self):
         gate = AntiGate(API_KEY, IMAGE1)
@@ -41,9 +42,10 @@ class TestAnigateCase(unittest.TestCase):
 
     def test_manual_binary(self):
         gate = AntiGate(API_KEY, auto_run=False)
-
-        captcha_id = gate.send(open(IMAGE1, 'rb').read(), binary=True)
+        fp = open(IMAGE1, 'rb')
+        captcha_id = gate.send(fp.read(), binary=True)
         self.assertTrue(str(captcha_id).isdigit())
+        fp.close()
 
         captcha_value = gate.get(captcha_id)
         self.assertEqual(str(captcha_value), '123')
@@ -61,8 +63,12 @@ class TestAnigateCase(unittest.TestCase):
 
     def test_multiple_binary(self):
         gate = AntiGate(API_KEY, auto_run=False)
-        captcha_id1 = gate.send(open(IMAGE1, 'rb').read(), binary=True)
-        captcha_id2 = gate.send(open(IMAGE2, 'rb').read(), binary=True)
+        fp1 = open(IMAGE1, 'rb')
+        fp2 = open(IMAGE2, 'rb')
+        captcha_id1 = gate.send(fp1.read(), binary=True)
+        captcha_id2 = gate.send(fp2.read(), binary=True)
+        fp1.close()
+        fp2.close()
 
         self.assertTrue(str(captcha_id1).isdigit())
         self.assertTrue(str(captcha_id2).isdigit())
