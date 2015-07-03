@@ -11,6 +11,7 @@ from xmltodict import parse
 from sys import exc_info
 from time import sleep
 import base64
+import six
 
 from grab import Grab, UploadFile
 
@@ -73,7 +74,11 @@ class AntiGate(object):
             'date': datetime.now().strftime('%Y-%m-%d')})
 
     def _body(self, key):
-        body = self.g.response.body.split('|')
+        if six.PY2:
+            body = self.g.response.body.split('|')
+        else:
+            body = self.g.response.body.decode('utf-8').split('|')
+
         if len(body) != 2 or body[0] != 'OK':
             raise AntiGateError(body[0])
         setattr(self, key, body[1])
