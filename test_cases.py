@@ -3,7 +3,7 @@ import os
 
 from antigate import AntiGate
 
-API_KEY = "21fbd2f052b446aaf3b243df10120f20"
+API_KEY = "baa2e299cb73b8cd1c68b179def94c38"
 IMAGE1 = "captcha/123.jpg"
 IMAGE2 = "captcha/456.jpg"
 
@@ -22,7 +22,8 @@ class TestAnigateCase(unittest.TestCase):
         self.assertEqual(str(AntiGate(API_KEY, IMAGE1)), '123')
 
     def test_base_binary(self):
-        self.assertEqual(str(AntiGate(API_KEY, open(IMAGE1, 'rb').read(), binary=True)), '123')
+        self.assertEqual(str(AntiGate(
+            API_KEY, open(IMAGE1, 'rb').read(), binary=True)), '123')
 
     def test_abuse(self):
         gate = AntiGate(API_KEY, IMAGE1)
@@ -56,8 +57,6 @@ class TestAnigateCase(unittest.TestCase):
         self.assertTrue(str(captcha_id2).isdigit())
 
         results = gate.get_multi([captcha_id1, captcha_id2])
-
-        #self.assertListEqual(results, ['123', '456'])
         self.assertTrue(results == ['123', '456'])
 
     def test_multiple_binary(self):
@@ -69,8 +68,6 @@ class TestAnigateCase(unittest.TestCase):
         self.assertTrue(str(captcha_id2).isdigit())
 
         results = gate.get_multi([captcha_id1, captcha_id2])
-
-        #self.assertListEqual(results, ['123', '456'])
         self.assertTrue(results == ['123', '456'])
 
 
