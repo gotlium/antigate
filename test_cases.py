@@ -1,21 +1,30 @@
 import unittest
 
 from antigate import AntiGate
+from collections import OrderedDict
 
-API_KEY = "baa2e299cb73b8cd1c68b179def94c38"
+API_KEY = "dfe27d9b91d2e5e5788091d2776a7136"
 IMAGE1 = "captcha/123.jpg"
 IMAGE2 = "captcha/456.jpg"
 
 
 class TestAnigateCase(unittest.TestCase):
     def test_balance(self):
-        self.assertTrue(AntiGate(API_KEY).balance() > 0)
+        balance = AntiGate(API_KEY).balance()
+        self.assertTrue(balance > 0.0)
+        self.assertEqual(type(balance), float)
 
     def test_stats(self):
-        self.assertTrue(len(AntiGate(API_KEY).stats()) > 0)
+        stats = AntiGate(API_KEY).stats()
+        self.assertTrue(len(stats) > 0)
+        self.assertEqual(type(stats), list)
+        self.assertEqual(type(stats[0]), OrderedDict)
 
     def test_load(self):
-        self.assertTrue(len(AntiGate(API_KEY).load()) > 0)
+        load = AntiGate(API_KEY).load()
+        self.assertTrue(len(load) > 0)
+        self.assertEqual(type(load), OrderedDict)
+        self.assertTrue(load.get('load') is not None)
 
     def test_base(self):
         self.assertEqual(str(AntiGate(API_KEY, IMAGE1)), '123')

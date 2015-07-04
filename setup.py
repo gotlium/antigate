@@ -1,9 +1,8 @@
 from setuptools import setup
 
-
 setup(
     name='antigate',
-    version="1.3.2",
+    version="1.3.3",
     description='Easy wrapper for antigate.com',
     keywords="antigate captcha",
     long_description=open('README.rst').read(),
@@ -26,5 +25,11 @@ setup(
         'License :: OSI Approved :: GNU General Public License (GPL)',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
     ],
 )

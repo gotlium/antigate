@@ -16,7 +16,7 @@ import six
 from grab import Grab, UploadFile
 
 
-DEBUG = False
+DEBUG = True
 
 
 class AntiGateError(Exception):
@@ -40,9 +40,12 @@ class AntiGate(object):
         if auto_run and captcha_file:
             self.run(captcha_file, binary)
 
+    def _get_body(self):
+        if six.PY2:
+            return self.g.response.body
+        return self.g.response.body.decode('utf-8')
+
     def _get_domain(self, path):
-        if DEBUG:
-            return 'http://127.0.0.1:8000/%s' % path
         return 'http://%s/%s' % (self.domain, path)
 
     def _get_input_url(self):
@@ -71,24 +74,22 @@ class AntiGate(object):
             'date': datetime.now().strftime('%Y-%m-%d')})
 
     def _body(self, key):
-        if six.PY2:
-            body = self.g.response.body.split('|')
-        else:
-            body = self.g.response.body.decode('utf-8').split('|')
-
+        body = self._get_body().split('|')
         if len(body) != 2 or body[0] != 'OK':
             raise AntiGateError(body[0])
         setattr(self, key, body[1])
         return body[1]
 
     def _response_to_dict(self):
-        return parse(self.g.response.body.lower())['response']
+        return parse(self._get_body().lower())['response']
 
     def _go(self, url, err):
+        if DEBUG is True:
+            print(url)
         self.g.go(url)
         if self.g.response.code != 200:
             raise AntiGateError('Code: %d\nMessage: %s\nBody: %s' % (
-                self.g.response.code, err, self.g.response.body
+                self.g.response.code, err, self._get_body()
             ))
 
     def _send(self, captcha_file, binary=False):
@@ -143,9 +144,7 @@ class AntiGate(object):
     def _get_multi(self, ids):
         self._go(self._get_build_url(data={
             'ids': ','.join(map(str, ids))}), 'Can not get result')
-        if six.PY3:
-            return self.g.response.body.decode('utf-8').split('|')
-        return self.g.response.body.split('|')
+        return self._get_body().split('|')
 
     def get_multi(self, ids):
         results = self._get_multi(ids)
@@ -160,7 +159,7 @@ class AntiGate(object):
 
     def balance(self):
         self._go(self._get_balance_url(), 'Can not get balance')
-        return float(self.g.response.body)
+        return float(self._get_body())
 
     def stats(self):
         self._go(self._get_stats_url(), 'Can not get stats')
@@ -176,3 +175,9 @@ class AntiGate(object):
 
     def __str__(self):
         return self.captcha_key
+
+
+class AntiCaptcha(AntiGate):
+    def __init__(self, *args, **kwargs):
+        kwargs['domain'] = 'anti-captcha.com'
+        super(AntiCaptcha, self).__init__(*args, **kwargs)

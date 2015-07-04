@@ -24,8 +24,8 @@ Real-time captcha-to-text decodings
 Documentation available at `Read the Docs <http://antigate.readthedocs.org/>`_.
 
 
-Installation:
--------------
+Installation
+------------
 1. From source:
 
 .. code-block:: bash
@@ -40,13 +40,13 @@ Installation:
 
     $  pip install antigate
 
-Usage:
-------
+Usage
+-----
 
 .. code-block:: python
 
-    >>> from antigate import AntiGate
-    >>> print AntiGate('API-KEY', 'captcha.jpg')
+    >>> from antigate import AntiGate            # AntiCaptcha
+    >>> print AntiGate('API-KEY', 'captcha.jpg') # AntiCaptcha('API-KEY', 'captcha.jpg')
 
 If you wish to complain about a mismatch results, use ``abuse`` method.
 
@@ -123,7 +123,13 @@ Get results for multiple ids:
     >>> print gate.get_multi([captcha_id1, captcha_id2])
 
 
-Compatibility:
+Api documentation
+-----------------
+https://anti-captcha.com/apidoc
+http://antigate.com/?action=api#algo
+
+
+Compatibility
 -------------
 * Python: 2.6, 2.7, 3.3, 3.4
 
