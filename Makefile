@@ -11,7 +11,7 @@ sphinx:
 	@xdg-open docs/.build/html/index.html >& /dev/null || open docs/.build/html/index.html >& /dev/null || true
 
 pep8:
-	@flake8 antigate --ignore=E402,E731,F401,F401 --exclude=migrations,south_migrations
+	@flake8 antigate
 
 clean:
 	@rm -fr build/

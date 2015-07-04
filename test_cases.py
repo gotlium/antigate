@@ -3,7 +3,7 @@ import unittest
 from antigate import AntiGate
 from collections import OrderedDict
 
-API_KEY = "a3e67269c84a8d8cf84112be6f6f05d8"
+API_KEY = "4ecc01e1e7c1da7d4e1c050b848041cc"
 IMAGE1 = "captcha/123.jpg"
 IMAGE2 = "captcha/456.jpg"
 
