@@ -6,19 +6,22 @@ except ImportError:
     from urllib.parse import urlencode
 from datetime import datetime
 from logging import getLogger
-from xmltodict import parse
 from sys import exc_info
 from time import sleep
 import base64
-import six
 
 from grab import Grab, UploadFile
+from xmltodict import parse
+from six import PY2, PY3
+
+__all__ = ('AntiGateError', 'AntiGate', 'AntiCaptcha')
 
 
 class AntiGateError(Exception):
     """
     API errors
     """
+
     def __init__(self, *args, **kwargs):
         super(AntiGateError, self).__init__(*args, **kwargs)
         if len(args) > 0 and args[0]:
@@ -74,7 +77,7 @@ class AntiGate(object):
         })
 
     def _get_response_body(self):
-        if six.PY2:
+        if PY2 is True:
             return self.grab.response.body
         return self.grab.response.body.decode('utf-8')
 
@@ -99,7 +102,7 @@ class AntiGate(object):
     def _send(self, captcha_file, binary=False):
         if binary:
             body = base64.b64encode(captcha_file)
-            if six.PY3:
+            if PY3 is True:
                 body = body.decode('utf-8')
             self.grab.setup(post=self._update_params({
                 'method': 'base64', 'key': self.api_key, 'body': body},
@@ -144,7 +147,7 @@ class AntiGate(object):
             except AntiGateError:
                 msg = exc_info()[1]
                 if str(msg) == 'CAPCHA_NOT_READY':
-                    sleep(self.check_interval/2.0)
+                    sleep(self.check_interval / 2.0)
                 else:
                     raise AntiGateError(msg)
 
