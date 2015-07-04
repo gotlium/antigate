@@ -12,8 +12,6 @@ setup(
     packages=['antigate'],
     include_package_data=True,
     install_requires=[
-        'pycurl',
-        'lxml',
         'grab',
         'xmltodict',
     ],

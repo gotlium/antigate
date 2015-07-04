@@ -6,7 +6,9 @@ coverage:
 	coverage report --omit="test*"
 
 sphinx:
-	cd docs && sphinx-build -b html -d .build/doctrees . .build/html
+	@rm -rf ./docs/.build/html/
+	@cd docs && sphinx-build -b html -d .build/doctrees . .build/html
+	@xdg-open docs/.build/html/index.html >& /dev/null || open docs/.build/html/index.html >& /dev/null || true
 
 pep8:
 	@flake8 antigate --ignore=E402,E731,F401,F401 --exclude=migrations,south_migrations
