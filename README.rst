@@ -21,7 +21,7 @@ Real-time captcha-to-text decodings
 
 
 
-Documentation available at `Read the Docs <http://antigate.readthedocs.org/>`_.
+Documentation available `here <https://pythonhosted.org/antigate/>`_.
 
 
 Installation
