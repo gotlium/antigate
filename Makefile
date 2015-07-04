@@ -1,8 +1,10 @@
 test:
 	python test_cases.py
+
 coverage:
-	export DJANGO_SETTINGS_MODULE=geoip.test_settings && \
-	coverage report --omit="antigate/test*"
+	coverage run --branch --source=antigate test_cases.py
+	coverage report --omit="test*"
+
 sphinx:
 	cd docs && sphinx-build -b html -d .build/doctrees . .build/html
 

@@ -3,8 +3,6 @@ Antigate
 
 Wrapper for online service which provides real-time captcha-to-text decodings.
 
-.. note::
-    If you want use this app on python 3.3, install patched pycurl from https://github.com/lorien/pycurl.git
 
 Contents
 --------

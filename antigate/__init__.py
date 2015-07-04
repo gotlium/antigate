@@ -16,9 +16,6 @@ import six
 from grab import Grab, UploadFile
 
 
-DEBUG = True
-
-
 class AntiGateError(Exception):
     """
     API errors
@@ -84,8 +81,6 @@ class AntiGate(object):
         return parse(self._get_body().lower())['response']
 
     def _go(self, url, err):
-        if DEBUG is True:
-            print(url)
         self.g.go(url)
         if self.g.response.code != 200:
             raise AntiGateError('Code: %d\nMessage: %s\nBody: %s' % (

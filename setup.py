@@ -2,8 +2,8 @@ from setuptools import setup
 
 setup(
     name='antigate',
-    version="1.3.3",
-    description='Easy wrapper for antigate.com',
+    version="1.3.4",
+    description='Easy wrapper for antigate.com/anti-captcha.com',
     keywords="antigate captcha",
     long_description=open('README.rst').read(),
     author="GoTLiuM InSPiRiT",

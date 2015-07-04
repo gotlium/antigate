@@ -125,8 +125,7 @@ Get results for multiple ids:
 
 Api documentation
 -----------------
-https://anti-captcha.com/apidoc
-http://antigate.com/?action=api#algo
+https://anti-captcha.com/apidoc / http://antigate.com/?action=api#algo
 
 
 Compatibility
