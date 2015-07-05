@@ -6,9 +6,10 @@ except ImportError:
     from urllib.parse import urlencode
 from datetime import datetime
 from logging import getLogger
+from base64 import b64encode
 from sys import exc_info
 from time import sleep
-import base64
+from re import match
 
 from grab import Grab, UploadFile
 from xmltodict import parse
@@ -24,14 +25,19 @@ class AntiGateError(Exception):
 
     def __init__(self, *args, **kwargs):
         super(AntiGateError, self).__init__(*args, **kwargs)
-        if len(args) > 0 and args[0]:
+        if len(args) > 0 and args[0] and args[0] != 'CAPCHA_NOT_READY':
             getLogger(__name__).error(args[0])
 
 
 class AntiGate(object):
-    def __init__(self, api_key, captcha_file='', auto_run=True,
+    __slots__ = [
+        'grab', 'domain', 'api_key', 'captcha_id', 'captcha_result',
+        'send_config', 'logger', 'check_interval'
+    ]
+
+    def __init__(self, api_key, captcha_file=None, auto_run=True,
                  grab_config=None, send_config=None,
-                 domain='antigate.com', binary=False, check_interval=10):
+                 domain='antigate.com', check_interval=10):
 
         self.grab = Grab(**(grab_config or {}))
         self.domain = domain
@@ -43,13 +49,31 @@ class AntiGate(object):
         self.check_interval = check_interval
 
         if auto_run and captcha_file:
-            self.run(captcha_file, binary)
+            self.run(captcha_file)
 
     @staticmethod
     def _update_params(defaults, additional):
         if additional is not None and additional:
             defaults.update(additional)
         return defaults
+
+    @staticmethod
+    def _is_base64(s):
+        is_base64 = False
+        if len(s) % 4 == 0:
+            try:
+                is_base64 = match('^[A-Za-z0-9+/]+[=]{0,2}$', s)
+            except TypeError:
+                is_base64 = match(b'^[A-Za-z0-9+/]+[=]{0,2}$', s)
+        return is_base64 and True
+
+    @staticmethod
+    def _is_binary(s):
+        try:
+            is_binary = '\0' in s
+        except TypeError:
+            is_binary = b'\0' in s
+        return is_binary
 
     def _get_domain(self, path):
         return 'http://%s/%s' % (self.domain, path)
@@ -99,9 +123,12 @@ class AntiGate(object):
                 self.grab.response.code, err, self._get_response_body()
             ))
 
-    def _send(self, captcha_file, binary=False):
-        if binary:
-            body = base64.b64encode(captcha_file)
+    def _send(self, captcha_file):
+        is_base64 = self._is_base64(captcha_file)
+        is_binary = self._is_binary(captcha_file)
+
+        if is_binary or is_base64:
+            body = b64encode(captcha_file) if not is_base64 else captcha_file
             if PY3 is True:
                 body = body.decode('utf-8')
             self.grab.setup(post=self._update_params({
@@ -128,11 +155,11 @@ class AntiGate(object):
             'ids': ','.join(map(str, ids))}), 'Can not get result')
         return self._get_response_body().split('|')
 
-    def send(self, captcha_file, binary=False):
+    def send(self, captcha_file):
         self.logger.debug('Sending captcha')
         while True:
             try:
-                return self._send(captcha_file, binary)
+                return self._send(captcha_file)
             except AntiGateError:
                 msg = exc_info()[1]
                 if str(msg) != 'ERROR_NO_SLOT_AVAILABLE':
@@ -175,8 +202,8 @@ class AntiGate(object):
         self._request(self._get_domain('load.php'), 'Can not get loads')
         return self._response_to_dict()
 
-    def run(self, captcha_file, binary=False):
-        self.send(captcha_file, binary)
+    def run(self, captcha_file):
+        self.send(captcha_file)
         self.get()
 
     def __str__(self):

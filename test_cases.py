@@ -1,9 +1,10 @@
 import unittest
+from collections import OrderedDict
+from base64 import b64encode
 
 from antigate import AntiGate
-from collections import OrderedDict
 
-API_KEY = "4ecc01e1e7c1da7d4e1c050b848041cc"
+API_KEY = "026a028a057848761cad3a3638ae3eb7"
 IMAGE1 = "captcha/123.jpg"
 IMAGE2 = "captcha/456.jpg"
 
@@ -31,8 +32,12 @@ class TestAnigateCase(unittest.TestCase):
 
     def test_base_binary(self):
         fp = open(IMAGE1, 'rb')
-        self.assertEqual(str(AntiGate(
-            API_KEY, fp.read(), binary=True)), '123')
+        self.assertEqual(str(AntiGate(API_KEY, fp.read())), '123')
+        fp.close()
+
+    def test_base64(self):
+        fp = open(IMAGE1, 'rb')
+        self.assertEqual(str(AntiGate(API_KEY, b64encode(fp.read()))), '123')
         fp.close()
 
     def test_abuse(self):
@@ -52,7 +57,17 @@ class TestAnigateCase(unittest.TestCase):
     def test_manual_binary(self):
         gate = AntiGate(API_KEY, auto_run=False)
         fp = open(IMAGE1, 'rb')
-        captcha_id = gate.send(fp.read(), binary=True)
+        captcha_id = gate.send(b64encode(fp.read()))
+        self.assertTrue(str(captcha_id).isdigit())
+        fp.close()
+
+        captcha_value = gate.get(captcha_id)
+        self.assertEqual(str(captcha_value), '123')
+
+    def test_manual_base64(self):
+        gate = AntiGate(API_KEY, auto_run=False)
+        fp = open(IMAGE1, 'rb')
+        captcha_id = gate.send(fp.read())
         self.assertTrue(str(captcha_id).isdigit())
         fp.close()
 
@@ -74,8 +89,23 @@ class TestAnigateCase(unittest.TestCase):
         gate = AntiGate(API_KEY, auto_run=False)
         fp1 = open(IMAGE1, 'rb')
         fp2 = open(IMAGE2, 'rb')
-        captcha_id1 = gate.send(fp1.read(), binary=True)
-        captcha_id2 = gate.send(fp2.read(), binary=True)
+        captcha_id1 = gate.send(fp1.read())
+        captcha_id2 = gate.send(fp2.read())
+        fp1.close()
+        fp2.close()
+
+        self.assertTrue(str(captcha_id1).isdigit())
+        self.assertTrue(str(captcha_id2).isdigit())
+
+        results = gate.get_multi([captcha_id1, captcha_id2])
+        self.assertTrue(results == ['123', '456'])
+
+    def test_multiple_base64(self):
+        gate = AntiGate(API_KEY, auto_run=False)
+        fp1 = open(IMAGE1, 'rb')
+        fp2 = open(IMAGE2, 'rb')
+        captcha_id1 = gate.send(b64encode(fp1.read()))
+        captcha_id2 = gate.send(b64encode(fp2.read()))
         fp1.close()
         fp2.close()
 
