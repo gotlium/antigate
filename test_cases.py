@@ -4,7 +4,7 @@ from base64 import b64encode
 
 from antigate import AntiGate
 
-API_KEY = "026a028a057848761cad3a3638ae3eb7"
+API_KEY = "b0766fea70d786a4a9bb453688ef94f4"
 IMAGE1 = "captcha/123.jpg"
 IMAGE2 = "captcha/456.jpg"
 

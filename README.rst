@@ -32,7 +32,7 @@ Installation
 
     $ git clone https://github.com/gotlium/antigate.git
 
-    $ cd antigate && sudo python setup.py install
+    $ cd antigate && python setup.py install
 
 **OR**
 
@@ -40,27 +40,33 @@ Installation
 
     $  pip install antigate
 
+
 Usage
 -----
 
 .. code-block:: python
 
     >>> from antigate import AntiGate            # AntiCaptcha
+
+    # one line example
     >>> print AntiGate('API-KEY', 'captcha.jpg') # AntiCaptcha('API-KEY', 'captcha.jpg')
 
-If you wish to complain about a mismatch results, use ``abuse`` method.
+    # or like this
+    >>> gate = AntiGate('API-KEY')               # AntiCaptcha('API-KEY')
+    >>> captcha_id = gate.send('captcha.jpg')
+    >>> print gate.get(captcha_id)
 
-**Example:**
+
+If you wish to complain about a mismatch results, use ``abuse`` method.
 
 .. code-block:: python
 
     >>> from antigate import AntiGate
     >>> gate = AntiGate('API-KEY', 'captcha.jpg')
-    >>> print gate
     >>> if str(gate) != 'qwerty':
     >>>     gate.abuse()
 
-After all manipulations, you can get your balance:
+After all manipulations, you can get your account balance:
 
 .. code-block:: python
 
@@ -74,7 +80,7 @@ Or get your statistics data:
     >>> print gate.stats()
 
 
-Real time system load info:
+System load info:
 
 .. code-block:: python
 
@@ -102,12 +108,12 @@ Additional options for sending Captcha:
     >>> gate = AntiGate('API-KEY', 'captcha.jpg', send_config=config)
     >>> print gate
 
-Disable auto run and use methods manually:
+Use all methods manually:
 
 .. code-block:: python
 
     >>> from antigate import AntiGate
-    >>> gate = AntiGate('API-KEY', auto_run=False)
+    >>> gate = AntiGate('API-KEY')
     >>> captcha_id1 = gate.send('captcha1.jpg')
     >>> captcha_id2 = gate.send('captcha2.jpg')
     >>> print gate.get(captcha_id1)
@@ -117,7 +123,7 @@ Get results for multiple ids:
 
 .. code-block:: python
 
-    >>> gate = AntiGate('API-KEY', auto_run=False)
+    >>> gate = AntiGate('API-KEY')
     >>> captcha_id1 = gate.send('captcha1.jpg')
     >>> captcha_id2 = gate.send('captcha2.jpg')
     >>> print gate.get_multi([captcha_id1, captcha_id2])
