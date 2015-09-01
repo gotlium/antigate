@@ -206,6 +206,10 @@ class AntiGate(object):
         self.send(captcha_file)
         self.get()
 
+    def __len__(self):
+        if self.captcha_result:
+            return len(self.captcha_result)
+
     def __str__(self):
         return self.captcha_result
 
