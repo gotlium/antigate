@@ -34,7 +34,7 @@ class Http(object):
             self.r = requests.get(url, **self.config)
         return self.r.status_code, self.r.text
 
-    def setup(self, *args, **kwargs):
+    def setup(self, **kwargs):
         self.conf.update(kwargs)
 
     @staticmethod

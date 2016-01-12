@@ -17,10 +17,11 @@ class Http(object):
         self.grab.go(url)
         return self.grab.response.code, self.get_response_body()
 
-    def setup(self, *args, **kwargs):
-        self.grab.setup(*args, **kwargs)
+    def setup(self, **kwargs):
+        self.grab.setup(**kwargs)
 
-    def upload(self, filename):
+    @staticmethod
+    def upload(filename):
         return UploadFile(filename)
 
     def reset(self):

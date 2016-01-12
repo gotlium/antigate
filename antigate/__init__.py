@@ -177,6 +177,7 @@ class AntiGate(object):
                 msg = exc_info()[1]
                 if str(msg) != 'ERROR_NO_SLOT_AVAILABLE':
                     raise AntiGateError(msg)
+                sleep(0.5)
 
     def get(self, captcha_id=None):
         self.logger.debug('Fetching result')

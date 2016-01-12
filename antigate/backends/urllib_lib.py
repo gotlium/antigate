@@ -48,7 +48,7 @@ class Http(object):
         self.r = self.u.read()
         return self.u.getcode(), self.r
 
-    def setup(self, *args, **kwargs):
+    def setup(self, **kwargs):
         self.conf.update(kwargs)
 
     @staticmethod
