@@ -11,7 +11,7 @@ before_script:
   - flake8 antigate --ignore F811
 script:
   - coverage run --branch --source=antigate test_cases.py
-  - coverage report --omit="test*,backends*"
+  - coverage report --omit="test*"
 branches:
   only:
     - master

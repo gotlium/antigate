@@ -45,12 +45,12 @@ class AntiGateError(Exception):
 class AntiGate(object):
     __slots__ = [
         'http', 'domain', 'api_key', 'captcha_id', 'captcha_result',
-        'send_config', 'logger', 'check_interval'
+        'send_config', 'logger', 'check_interval', 'send_interval',
     ]
 
     def __init__(self, api_key, captcha_file=None, auto_run=True,
                  grab_config=None, send_config=None,
-                 domain='antigate.com', check_interval=10):
+                 domain='antigate.com', check_interval=10, send_interval=0.1):
 
         self.http = Http(**(grab_config or {}))
         self.domain = domain
@@ -60,6 +60,7 @@ class AntiGate(object):
         self.send_config = send_config
         self.logger = getLogger(__name__)
         self.check_interval = check_interval
+        self.send_interval = send_interval
 
         if auto_run and captcha_file:
             self.run(captcha_file)
@@ -196,7 +197,7 @@ class AntiGate(object):
         self.logger.debug('Fetching multi result')
         results = self._get_multi(ids)
         while 'CAPCHA_NOT_READY' in results:
-            sleep(self.check_interval)
+            sleep(self.send_interval)
             results = self._get_multi(ids)
         return results
 
