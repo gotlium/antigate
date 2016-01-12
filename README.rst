@@ -129,6 +129,18 @@ Get results for multiple ids:
     >>> print gate.get_multi([captcha_id1, captcha_id2])
 
 
+If you want use bytes you can send using by base64:
+
+.. code-block:: python
+
+    >>> gate = AntiGate('API-KEY')
+    # base64
+    captcha_id = gate.send(b64encode(fp.read()))
+    # or stream
+    captcha_id = gate.send(fp.read())
+    >>> print gate.get(captcha_id)
+
+
 Api documentation
 -----------------
 https://anti-captcha.com/apidoc / http://antigate.com/?action=api#algo
