@@ -16,7 +16,7 @@ from six import PY3
 
 try:
     from antigate.backends.grab_lib import Http
-except ImportError, msg:
+except ImportError:
     try:
         from antigate.backends.requests_lib import Http
     except ImportError:

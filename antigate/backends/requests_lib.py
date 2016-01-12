@@ -5,7 +5,6 @@ import requests
 
 class Http(object):
     def __init__(self, **config):
-        print("> Requests")
         self.r = None
         self.conf = {}
         self.config = config

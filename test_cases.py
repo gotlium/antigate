@@ -30,6 +30,11 @@ class TestAnigateCase(unittest.TestCase):
     def test_base(self):
         self.assertEqual(str(AntiGate(API_KEY, IMAGE1)), '123')
 
+    def test_captcha_config(self):
+        config = {'min_len': '3', 'max_len': '4', 'numeric': '1'}
+        ag = AntiGate(API_KEY, IMAGE1, send_config=config)
+        self.assertEqual(str(ag), '123')
+
     def test_base_binary(self):
         fp = open(IMAGE1, 'rb')
         self.assertEqual(str(AntiGate(API_KEY, fp.read())), '123')

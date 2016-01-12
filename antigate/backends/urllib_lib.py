@@ -14,7 +14,6 @@ from six import PY3
 
 class Http(object):
     def __init__(self, **config):
-        print("> UrlLib")
         self.u = None
         self.r = None
         self.conf = {}

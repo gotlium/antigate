@@ -6,7 +6,6 @@ from six import PY2
 
 class Http(object):
     def __init__(self, **config):
-        print("> GrabLib")
         self.grab = Grab(**(config or {}))
 
     def get_response_body(self):

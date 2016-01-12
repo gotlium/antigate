@@ -10,7 +10,7 @@ install:
   - pip install -r requirements/tests.txt --use-mirrors
   - pip install -r requirements/package.txt --use-mirrors
 before_script:
-  - flake8 antigate
+  - flake8 antigate --ignore F811
 script:
   - env ANTIGATE_HTTP_BACKEND=antigate.backends.requests_lib make test
   - env ANTIGATE_HTTP_BACKEND=antigate.backends.urllib_lib make test
