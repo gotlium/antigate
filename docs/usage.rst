@@ -74,7 +74,7 @@ Disable auto run and use methods manually::
 
   captcha_id1 = gate.send('captcha1.jpg')
   captcha_id2 = gate.send('captcha2.jpg')
-  
+
   print gate.get(captcha_id1)
   print gate.get(captcha_id2)
 
@@ -92,3 +92,28 @@ Get results for multiple ids::
   captcha_id2 = gate.send('captcha2.jpg')
 
   print gate.get_multi([captcha_id1, captcha_id2])
+
+
+Base64 and Bytes
+----------------
+
+Bytes example::
+
+  # Per line binary example
+  print AntiGate('API-KEY', fp.read())
+
+  # Custom requests
+  gate = AntiGate('API-KEY')
+  captcha_id = gate.send(b64encode(fp.read()))
+  print gate.get(captcha_id)
+
+
+Base64 example::
+
+  # Per line base64 example
+  print AntiGate('API-KEY', b64encode(fp.read()))
+
+  # Custom requests
+  gate = AntiGate('API-KEY')
+  captcha_id = gate.send(fp.read())
+  print gate.get(captcha_id)

@@ -3,6 +3,7 @@ python:
   - "2.7"
   - "3.3"
   - "3.4"
+  - "3.5"
 before_install:
   - export PIP_USE_MIRRORS=true
 install:
@@ -11,6 +12,8 @@ install:
 before_script:
   - flake8 antigate
 script:
+  - env ANTIGATE_HTTP_BACKEND=antigate.backends.requests_lib make test
+  - env ANTIGATE_HTTP_BACKEND=antigate.backends.urllib_lib make test
   - coverage run --branch --source=antigate test_cases.py
   - coverage report --omit="test*"
 branches:

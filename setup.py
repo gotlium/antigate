@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='antigate',
-    version="1.3.4",
+    version="1.4.0",
     description='Easy wrapper for antigate.com/anti-captcha.com',
     keywords="antigate captcha",
     long_description=open('README.rst').read(),
@@ -12,8 +12,8 @@ setup(
     packages=['antigate'],
     include_package_data=True,
     install_requires=[
-        'grab',
         'xmltodict',
+        'six',
     ],
     zip_safe=False,
     classifiers=[

@@ -9,11 +9,24 @@ from logging import getLogger
 from base64 import b64encode
 from sys import exc_info
 from time import sleep
+from os import getenv
 from re import match
 
-from grab import Grab, UploadFile
-from xmltodict import parse
-from six import PY2, PY3
+from six import PY3
+
+try:
+    from antigate.backends.grab_lib import Http
+except ImportError, msg:
+    try:
+        from antigate.backends.requests_lib import Http
+    except ImportError:
+        from antigate.backends.urllib_lib import Http
+
+if getenv('ANTIGATE_HTTP_BACKEND'):
+    import importlib
+
+    Http = importlib.import_module(getenv('ANTIGATE_HTTP_BACKEND')).Http
+
 
 __all__ = ('AntiGateError', 'AntiGate', 'AntiCaptcha')
 
@@ -31,7 +44,7 @@ class AntiGateError(Exception):
 
 class AntiGate(object):
     __slots__ = [
-        'grab', 'domain', 'api_key', 'captcha_id', 'captcha_result',
+        'http', 'domain', 'api_key', 'captcha_id', 'captcha_result',
         'send_config', 'logger', 'check_interval'
     ]
 
@@ -39,7 +52,7 @@ class AntiGate(object):
                  grab_config=None, send_config=None,
                  domain='antigate.com', check_interval=10):
 
-        self.grab = Grab(**(grab_config or {}))
+        self.http = Http(**(grab_config or {}))
         self.domain = domain
         self.api_key = api_key
         self.captcha_id = None
@@ -101,9 +114,7 @@ class AntiGate(object):
         })
 
     def _get_response_body(self):
-        if PY2 is True:
-            return self.grab.response.body
-        return self.grab.response.body.decode('utf-8')
+        return self.http.get_response_body()
 
     def _get_response(self, key=None):
         body = self._get_response_body().split('|')
@@ -114,13 +125,15 @@ class AntiGate(object):
         return body[1]
 
     def _response_to_dict(self):
+        from xmltodict import parse
+
         return parse(self._get_response_body().lower()).get('response', {})
 
     def _request(self, url, err):
-        self.grab.go(url)
-        if self.grab.response.code != 200:
+        code, response = self.http.request(url)
+        if code != 200:
             raise AntiGateError('Code: %d\nMessage: %s\nBody: %s' % (
-                self.grab.response.code, err, self._get_response_body()
+                code, err, response
             ))
 
     def _send(self, captcha_file):
@@ -131,21 +144,21 @@ class AntiGate(object):
             body = b64encode(captcha_file) if not is_base64 else captcha_file
             if PY3 is True:
                 body = body.decode('utf-8')
-            self.grab.setup(post=self._update_params({
+            self.http.setup(post=self._update_params({
                 'method': 'base64', 'key': self.api_key, 'body': body},
                 self.send_config
             ))
         else:
-            self.grab.setup(multipart_post=self._update_params({
+            self.http.setup(multipart_post=self._update_params({
                 'method': 'post', 'key': self.api_key,
-                'file': UploadFile(captcha_file)},
+                'file': self.http.upload(captcha_file)},
                 self.send_config
             ))
         self._request(self._get_input_url(), 'Can not send captcha')
         return self._get_response('captcha_id')
 
     def _get(self, captcha_id=None):
-        self.grab.reset()
+        self.http.reset()
         self._request(
             self._get_result_url(captcha_id=captcha_id), 'Can not get captcha')
         return self._get_response('captcha_result')

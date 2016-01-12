@@ -6,15 +6,15 @@ Real-time captcha-to-text decodings
     :target: https://travis-ci.org/gotlium/antigate
 .. image:: https://coveralls.io/repos/gotlium/antigate/badge.png?branch=master
     :target: https://coveralls.io/r/gotlium/antigate?branch=master
-.. image:: https://img.shields.io/badge/python-2.6,2.7,3.3,3.4-blue.svg
-    :alt: Python 2.6, 2.7, 3.3, 3.4
+.. image:: https://img.shields.io/badge/python-2.6,2.7,3.3,3.4,3.5-blue.svg
+    :alt: Python 2.6, 2.7, 3.3, 3.4, 3.5
     :target: https://pypi.python.org/pypi/antigate/
 .. image:: https://img.shields.io/pypi/v/antigate.svg
     :alt: Current version on PyPi
-    :target: https://crate.io/packages/antigate/
+    :target:https://pypi.python.org/pypi/antigate/
 .. image:: https://img.shields.io/pypi/dm/antigate.svg
     :alt: Downloads from PyPi
-    :target: https://crate.io/packages/antigate/
+    :target:https://pypi.python.org/pypi/antigate/
 .. image:: https://img.shields.io/badge/license-GPLv2-green.svg
     :target: https://pypi.python.org/pypi/antigate/
     :alt: License
@@ -26,7 +26,8 @@ Documentation available `here <https://pythonhosted.org/antigate/>`_.
 
 Installation
 ------------
-1. From source:
+
+From source:
 
 .. code-block:: bash
 
@@ -34,11 +35,32 @@ Installation
 
     $ cd antigate && python setup.py install
 
-**OR**
+From PyPi:
 
 .. code-block:: bash
 
     $  pip install antigate
+
+
+**Requirements:**
+
+You can use grab/requests/urllib as http backends.
+
+`Grab` installation:
+
+.. code-block:: bash
+
+    pip install grab pycurl
+
+
+`Requests` installation:
+
+.. code-block:: bash
+
+    pip install requests
+
+
+`UrlLib` used by default.
 
 
 Usage
@@ -48,8 +70,8 @@ Usage
 
     >>> from antigate import AntiGate            # AntiCaptcha
 
-    # one line example
-    >>> print AntiGate('API-KEY', 'captcha.jpg') # AntiCaptcha('API-KEY', 'captcha.jpg')
+    # per line example
+    >>> print AntiGate('API-KEY', 'captcha.jpg') # AntiCaptcha('API-KEY', filename or base64 or bytes)
 
     # or like this
     >>> gate = AntiGate('API-KEY')               # AntiCaptcha('API-KEY')
@@ -57,7 +79,7 @@ Usage
     >>> print gate.get(captcha_id)
 
 
-If you wish to complain about a mismatch results, use ``abuse`` method.
+If you wish to complain about a mismatch results, use ``abuse`` method:
 
 .. code-block:: python
 
@@ -129,15 +151,25 @@ Get results for multiple ids:
     >>> print gate.get_multi([captcha_id1, captcha_id2])
 
 
-If you want use bytes you can send using by base64:
+If you want use bytes or base64:
 
 .. code-block:: python
 
+    # Per line binary example
+    >>> print AntiGate('API-KEY', fp.read())
+
+    # Per line base64 example
+    >>> print AntiGate('API-KEY', b64encode(fp.read()))
+
+    # Custom requests
     >>> gate = AntiGate('API-KEY')
+
     # base64
-    captcha_id = gate.send(b64encode(fp.read()))
+    >>> captcha_id = gate.send(b64encode(fp.read()))
+
     # or stream
-    captcha_id = gate.send(fp.read())
+    >>> captcha_id = gate.send(fp.read())
+
     >>> print gate.get(captcha_id)
 
 
@@ -148,7 +180,7 @@ https://anti-captcha.com/apidoc / http://antigate.com/?action=api#algo
 
 Compatibility
 -------------
-* Python: 2.6, 2.7, 3.3, 3.4
+* Python: 2.6, 2.7, 3.3, 3.4, 3.5
 
 
 .. image:: https://d2weczhvl823v0.cloudfront.net/gotlium/antigate/trend.png
