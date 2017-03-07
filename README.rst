@@ -1,10 +1,10 @@
 Real-time captcha-to-text decodings
 ===================================
 
-.. image:: https://api.travis-ci.org/gotlium/antigate.png?branch=master
+.. image:: https://api.travis-ci.org/gotlium/antigate.svg?branch=master
     :alt: Build Status
     :target: https://travis-ci.org/gotlium/antigate
-.. image:: https://coveralls.io/repos/gotlium/antigate/badge.png?branch=master
+.. image:: https://coveralls.io/repos/gotlium/antigate/badge.svg?branch=master
     :target: https://coveralls.io/r/gotlium/antigate?branch=master
 .. image:: https://img.shields.io/badge/python-2.6,2.7,3.3,3.4,3.5-blue.svg
     :alt: Python 2.6, 2.7, 3.3, 3.4, 3.5
